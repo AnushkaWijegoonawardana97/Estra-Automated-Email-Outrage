@@ -391,7 +391,11 @@ export function LeadsTable({
         />
       </div>
 
-      <LeadDetailDrawer lead={selected} onClose={() => setSelected(null)} />
+      <LeadDetailDrawer
+        leadId={selected?._id ?? null}
+        fallbackTitle={selected?.businessName}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }

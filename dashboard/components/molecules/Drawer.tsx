@@ -7,9 +7,16 @@ interface DrawerProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  panelClassName?: string;
 }
 
-export function Drawer({ open, onClose, title, children }: DrawerProps) {
+export function Drawer({
+  open,
+  onClose,
+  title,
+  children,
+  panelClassName = "max-w-lg",
+}: DrawerProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -40,7 +47,7 @@ export function Drawer({ open, onClose, title, children }: DrawerProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative flex h-full w-full max-w-md flex-col border-l border-zinc-200 bg-white shadow-xl transition-transform duration-200 ease-out"
+        className={`relative flex h-full w-full ${panelClassName} flex-col border-l border-zinc-200 bg-white shadow-xl transition-transform duration-200 ease-out`}
       >
         <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
           <h2 className="text-lg font-semibold text-zinc-900">{title}</h2>

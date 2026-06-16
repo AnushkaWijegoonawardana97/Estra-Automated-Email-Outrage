@@ -37,6 +37,16 @@ const leadSchema = new Schema(
     openingHours: { type: Map, of: String, default: {} },
     gmbDescription: { type: String, default: null },
     gmbServices: { type: [String], default: [] },
+    sectionsFound: {
+      type: {
+        overview: { type: Boolean, default: false },
+        about: { type: Boolean, default: false },
+      },
+      default: null,
+    },
+    pagesChecked: { type: Number, default: null },
+    emailCandidatesTried: { type: Number, default: null },
+    emailDiscoveryLog: { type: [Schema.Types.Mixed], default: [] },
     domainName: { type: String, default: null },
     domainAgeYears: { type: Number, default: null },
     websiteTechStack: { type: [String], default: [] },
