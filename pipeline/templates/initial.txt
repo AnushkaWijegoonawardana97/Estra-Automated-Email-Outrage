@@ -1,0 +1,16 @@
+{{greeting}}
+
+{{opening_hook}}
+
+{{gap_insight}}
+
+{{service_pitch}}
+
+{{cta_line}}
+
+How we can help:
+{{service_links_text}}
+
+---
+Estra Digital | estradigital.co.uk
+{{contact_email}}

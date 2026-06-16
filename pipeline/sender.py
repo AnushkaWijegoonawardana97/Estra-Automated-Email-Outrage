@@ -29,7 +29,14 @@ def _is_suppressed(db, email: str | None) -> bool:
     return db["unsubscribed"].find_one({"email": email.lower()}) is not None
 
 
-def send_via_brevo(to_email: str, subject: str, body: str, config: dict) -> str:
+def send_via_brevo(
+    to_email: str,
+    subject: str,
+    text_body: str,
+    config: dict,
+    *,
+    html_body: str | None = None,
+) -> str:
     api_key = os.environ.get("BREVO_API_KEY")
     if not api_key:
         raise RuntimeError("BREVO_API_KEY is required")
@@ -41,15 +48,22 @@ def send_via_brevo(to_email: str, subject: str, body: str, config: dict) -> str:
         },
         "to": [{"email": to_email}],
         "subject": subject,
-        "textContent": body,
+        "textContent": text_body,
     }
+    if html_body:
+        payload["htmlContent"] = html_body
     response = requests.post(
         BREVO_API_URL,
         json=payload,
         headers={"api-key": api_key, "Content-Type": "application/json"},
         timeout=30,
     )
-    response.raise_for_status()
+    if not response.ok:
+        try:
+            detail = response.json().get("message", response.text)
+        except Exception:
+            detail = response.text
+        raise RuntimeError(f"Brevo API error ({response.status_code}): {detail}")
     data = response.json()
     return str(data.get("messageId", ""))
 
@@ -87,15 +101,22 @@ def send_initial_emails(leads: list[dict]) -> int:
             continue
 
         try:
-            subject, body, token = generate_email(lead, "initial")
-            message_id = send_via_brevo(email, subject, body, config)
+            subject, html_body, text_body, token = generate_email(lead, "initial")
+            message_id = send_via_brevo(
+                email,
+                subject,
+                text_body,
+                config,
+                html_body=html_body,
+            )
 
             db["emails_sent"].insert_one(
                 {
                     "leadId": lead["_id"],
                     "emailType": "initial",
                     "subject": subject,
-                    "body": body,
+                    "body": text_body,
+                    "htmlBody": html_body,
                     "serviceClicked": None,
                     "sentAt": datetime.now(timezone.utc),
                     "brevoMessageId": message_id,
@@ -162,20 +183,27 @@ def send_follow_up_email(
     if _remaining_daily_quota(db, config) == 0:
         return False
 
-    subject, body, token = generate_email(
+    subject, html_body, text_body, token = generate_email(
         lead,
         email_type,
         original_subject=original_subject,
         service=service,
     )
-    message_id = send_via_brevo(email, subject, body, config)
+    message_id = send_via_brevo(
+        email,
+        subject,
+        text_body,
+        config,
+        html_body=html_body,
+    )
 
     db["emails_sent"].insert_one(
         {
             "leadId": lead["_id"],
             "emailType": email_type,
             "subject": subject,
-            "body": body,
+            "body": text_body,
+            "htmlBody": html_body,
             "serviceClicked": service,
             "sentAt": datetime.now(timezone.utc),
             "brevoMessageId": message_id,

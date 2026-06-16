@@ -1,0 +1,15 @@
+Generate personalised follow-up email content slots. The recipient did not open the first email.
+Return ONLY valid JSON with no markdown fences or extra text.
+
+Business: {business_name}
+Original subject: {original_subject}
+
+Required JSON keys:
+- subject: short follow-up subject line
+- greeting: friendly greeting
+- body: 2-3 sentences, friendly and concise
+
+Rules:
+- Do not repeat the original subject verbatim
+- No sign-off, footer, links, or HTML
+- British English spelling

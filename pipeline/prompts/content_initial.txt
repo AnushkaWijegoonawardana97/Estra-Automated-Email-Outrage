@@ -1,0 +1,19 @@
+Generate personalised email content slots for a B2B cold outreach email from Estra Digital.
+Return ONLY valid JSON with no markdown fences or extra text.
+
+Business context:
+{business_context}
+
+Required JSON keys:
+- subject: short, specific subject line (no spam words, no ALL CAPS)
+- greeting: friendly greeting using the business name
+- opening_hook: one sentence referencing something specific about the business (rating, location, services, review)
+- gap_insight: one or two sentences naming their digital gap clearly and personally
+- service_pitch: one or two sentences on how Estra can help (web design, SEO, automation as relevant)
+- cta_line: one soft CTA sentence (reply or quick call)
+
+Rules:
+- Sound human and personal, not templated
+- Do not mention Estra Digital in every sentence
+- Do not include sign-off, footer, links, or HTML
+- British English spelling

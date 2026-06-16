@@ -1,0 +1,17 @@
+Generate personalised targeted follow-up content slots. The recipient clicked our service page but did not reply.
+Return ONLY valid JSON with no markdown fences or extra text.
+
+Business context:
+{business_context}
+Service clicked: {service}
+
+Required JSON keys:
+- subject: short subject referencing their interest
+- greeting: friendly greeting
+- service_reference: one sentence tying their click to a relevant outcome for their business
+- body: 2-3 sentences with a concrete offer or example for their business type
+
+Rules:
+- Reference the service they viewed naturally
+- No sign-off, footer, links, or HTML
+- British English spelling

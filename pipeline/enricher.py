@@ -14,12 +14,12 @@ import whois
 from anthropic import Anthropic
 from playwright.sync_api import sync_playwright
 
+from ai_config import CLAUDE_MODEL
 from db import get_config, get_db
 from gmaps_extract import merge_contact_fields, open_place_page, scrape_business_detail_page
 from log_util import log_pipeline_event
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
-CLAUDE_MODEL = "claude-3-5-haiku-latest"
 
 
 def _load_prompt(name: str, config: dict[str, Any]) -> str:

@@ -35,7 +35,7 @@ const tabs = [
   "Filter Rules",
   "Sending Rules",
   "Sender Identity",
-  "Email Prompts",
+  "Email Content Prompts",
 ] as const;
 
 export function SettingsTabs({ initialConfig }: { initialConfig: ConfigData }) {
@@ -201,13 +201,17 @@ export function SettingsTabs({ initialConfig }: { initialConfig: ConfigData }) {
           </div>
         )}
 
-        {activeTab === "Email Prompts" && (
+        {activeTab === "Email Content Prompts" && (
           <div className="space-y-4">
+            <p className="text-sm text-zinc-500">
+              These prompts control AI-generated personalisation slots only. Email layout,
+              branding, and service links are fixed in pipeline templates.
+            </p>
             {(
               [
-                ["initialEmail", "Initial email"],
-                ["followupGeneric", "Generic follow-up"],
-                ["followupTargeted", "Targeted follow-up"],
+                ["initialEmail", "Initial email content"],
+                ["followupGeneric", "Generic follow-up content"],
+                ["followupTargeted", "Targeted follow-up content"],
                 ["enrichmentSummary", "Enrichment summary"],
               ] as const
             ).map(([key, label]) => (

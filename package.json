@@ -10,6 +10,7 @@
     "pipeline": "cd pipeline && python main.py",
     "pipeline:find-email": "cd pipeline && python main.py --step find_email",
     "pipeline:send": "cd pipeline && python main.py --step send",
+    "pipeline:test-send": "cd pipeline && python send_test_leads.py",
     "pipeline:retry": "cd pipeline && python main.py --step retry_failed",
     "pipeline:jobs": "cd pipeline && python job_runner.py",
     "follow-up": "cd pipeline && python follow_up.py"

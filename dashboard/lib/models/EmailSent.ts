@@ -10,6 +10,7 @@ const emailSentSchema = new Schema(
     },
     subject: { type: String, required: true },
     body: { type: String, required: true },
+    htmlBody: { type: String, default: null },
     serviceClicked: { type: String, default: null },
     sentAt: { type: Date, default: Date.now },
     brevoMessageId: { type: String, default: "" },

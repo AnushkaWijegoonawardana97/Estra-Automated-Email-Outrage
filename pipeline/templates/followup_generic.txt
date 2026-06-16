@@ -1,0 +1,6 @@
+{{greeting}}
+
+{{body}}
+
+---
+Estra Digital | estradigital.co.uk
