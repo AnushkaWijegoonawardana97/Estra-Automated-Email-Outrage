@@ -44,8 +44,16 @@ pnpm seed
 # Dashboard (http://localhost:3000 — basic auth)
 pnpm dev
 
-# Pipeline (manual run)
-pnpm pipeline              # full: scrape → enrich → send
+# Parallel local pipeline (opens 6 Terminal windows on macOS)
+pnpm dev:pipeline
+
+# Or run a single worker in this terminal:
+# pnpm pipeline:worker -- --step enrich --interval 45
+
+# Pipeline (one-shot manual runs)
+pnpm pipeline:scrape
+pnpm pipeline:enrich
+pnpm pipeline              # full: scrape → enrich → find_email → send
 pnpm pipeline:send         # send only (enriched leads with email)
 pnpm pipeline:retry        # retry failed enrich + unsent leads
 pnpm pipeline:jobs         # process one pending dashboard job
@@ -60,7 +68,7 @@ pnpm pipeline:test-send    # reset seed leads + send all 3 templates to Gmail + 
 cd pipeline && python3 send_test_leads.py --types initial
 ```
 
-Use the **Activity** page to trigger pipeline steps from the dashboard (local dev runs jobs immediately; production uses the 5-minute Render cron).
+Use the **Activity** page to trigger pipeline steps from the dashboard. With `pnpm dev:pipeline`, a **jobs** worker polls every 15s and runs triggers automatically in dev.
 
 ## Deploy
 
