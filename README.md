@@ -50,6 +50,14 @@ pnpm pipeline:send         # send only (enriched leads with email)
 pnpm pipeline:retry        # retry failed enrich + unsent leads
 pnpm pipeline:jobs         # process one pending dashboard job
 pnpm follow-up
+pnpm pipeline:test-email   # unit tests for template rendering
+pnpm pipeline:test-send    # reset seed leads + send all 3 templates to Gmail + YOPmail
+```
+
+`pipeline:test-send` sends **initial**, **followup_generic**, and **followup_targeted** (automation) to each seed test lead. Subjects are prefixed with `[TEST …]` for easy inbox filtering. Send one template only:
+
+```bash
+cd pipeline && python3 send_test_leads.py --types initial
 ```
 
 Use the **Activity** page to trigger pipeline steps from the dashboard (local dev runs jobs immediately; production uses the 5-minute Render cron).

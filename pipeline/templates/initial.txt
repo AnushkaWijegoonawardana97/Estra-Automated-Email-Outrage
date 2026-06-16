@@ -1,16 +1,14 @@
-{{greeting}}
+{{greeting_text}}
 
-{{opening_hook}}
+{{pitch_text}}
 
-{{gap_insight}}
+{{brand_name}}: design, development, security & AI. 150+ projects shipped.
 
-{{service_pitch}}
+{{primary_cta_text}}
 
-{{cta_line}}
+{{secondary_links_text}}
 
 How we can help:
 {{service_links_text}}
 
----
-Estra Digital | estradigital.co.uk
-{{contact_email}}
+{{reply_text}}

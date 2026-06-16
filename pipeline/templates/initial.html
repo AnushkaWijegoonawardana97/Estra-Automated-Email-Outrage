@@ -1,29 +1,20 @@
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:{{card}};border-radius:16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:{{card}};border:1px solid {{border}};border-radius:20px;">
   <tr>
     <td style="padding:28px 24px;">
-      <p style="margin:0 0 16px;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:{{accent}};">
-        Personal note
+      {{greeting_html}}
+      {{pitch_html}}
+      <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:{{muted}};">
+        We're <strong style="color:{{text}};">{{brand_name}}</strong>: design, development, security &amp; AI.
+        150+ projects shipped for businesses like yours.
       </p>
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:{{text}};">{{greeting}}</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:{{muted}};">{{opening_hook}}</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:{{muted}};">{{gap_insight}}</p>
-      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:{{muted}};">{{service_pitch}}</p>
-      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:{{text}};">{{cta_line}}</p>
-      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
-        <tr>
-          <td style="border-radius:999px;background-color:{{cta_bg}};">
-            <a href="{{website_url}}/contact" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:600;color:{{cta_text}};text-decoration:none;">
-              Start a project →
-            </a>
-          </td>
-        </tr>
-      </table>
-      <p style="margin:24px 0 8px;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:{{accent}};">
-        How we can help
+      {{primary_cta_html}}
+      <p style="margin:16px 0 0;text-align:center;font-size:14px;line-height:2;">
+        {{secondary_links_html}}
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.8;color:{{text}};">
+      <p style="margin:16px 0 0;text-align:center;font-size:14px;line-height:1.8;color:{{text}};">
         {{service_links_html}}
       </p>
+      {{reply_html}}
     </td>
   </tr>
 </table>

@@ -35,7 +35,7 @@ const tabs = [
   "Filter Rules",
   "Sending Rules",
   "Sender Identity",
-  "Email Content Prompts",
+  "Enrichment Prompt",
 ] as const;
 
 export function SettingsTabs({ initialConfig }: { initialConfig: ConfigData }) {
@@ -201,38 +201,29 @@ export function SettingsTabs({ initialConfig }: { initialConfig: ConfigData }) {
           </div>
         )}
 
-        {activeTab === "Email Content Prompts" && (
+        {activeTab === "Enrichment Prompt" && (
           <div className="space-y-4">
             <p className="text-sm text-zinc-500">
-              These prompts control AI-generated personalisation slots only. Email layout,
-              branding, and service links are fixed in pipeline templates.
+              Outbound email copy is template-driven in the pipeline. This prompt
+              controls AI enrichment only (business summaries used for personalisation).
             </p>
-            {(
-              [
-                ["initialEmail", "Initial email content"],
-                ["followupGeneric", "Generic follow-up content"],
-                ["followupTargeted", "Targeted follow-up content"],
-                ["enrichmentSummary", "Enrichment summary"],
-              ] as const
-            ).map(([key, label]) => (
-              <label key={key} className="block text-sm">
-                {label}
-                <textarea
-                  className="mt-1 w-full rounded-md border border-zinc-300 p-2 font-mono text-xs"
-                  rows={6}
-                  value={config.emailPrompts[key]}
-                  onChange={(event) =>
-                    setConfig({
-                      ...config,
-                      emailPrompts: {
-                        ...config.emailPrompts,
-                        [key]: event.target.value,
-                      },
-                    })
-                  }
-                />
-              </label>
-            ))}
+            <label className="block text-sm">
+              Enrichment summary
+              <textarea
+                className="mt-1 w-full rounded-md border border-zinc-300 p-2 font-mono text-xs"
+                rows={8}
+                value={config.emailPrompts.enrichmentSummary}
+                onChange={(event) =>
+                  setConfig({
+                    ...config,
+                    emailPrompts: {
+                      ...config.emailPrompts,
+                      enrichmentSummary: event.target.value,
+                    },
+                  })
+                }
+              />
+            </label>
           </div>
         )}
       </div>
