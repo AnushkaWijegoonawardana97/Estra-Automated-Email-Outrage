@@ -1,0 +1,51 @@
+services:
+  - type: cron
+    name: estra-daily-pipeline
+    runtime: python
+    schedule: "0 2 * * *"
+    rootDir: pipeline
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: python main.py
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+
+  - type: cron
+    name: estra-pipeline-jobs
+    runtime: python
+    schedule: "*/5 * * * *"
+    rootDir: pipeline
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: python job_runner.py
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+
+  - type: cron
+    name: estra-daily-follow-up
+    runtime: python
+    schedule: "0 3 * * *"
+    rootDir: pipeline
+    buildCommand: pip install -r requirements.txt
+    startCommand: python follow_up.py
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false

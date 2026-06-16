@@ -1,0 +1,10 @@
+Write a short generic follow-up email. The recipient did not open the first email.
+
+Business: {business_name}
+Original subject: {original_subject}
+
+Rules:
+- Plain text, friendly tone
+- 2-3 sentences max
+- Sign off as Estra
+- First line: "Subject: ..."

@@ -1,0 +1,9 @@
+Analyse this business for B2B outreach. Write a 2-3 sentence summary covering:
+1. What they do and who they serve
+2. Their exact digital gap (no website / social-only / outdated site)
+3. Which Estra services are most relevant
+
+Business data:
+{business_data}
+
+Also output on the last line: digital_gap: one of no_website / social_only / weak_site

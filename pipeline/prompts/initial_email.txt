@@ -1,0 +1,15 @@
+Write a personalised cold email for B2B outreach from Estra Digital.
+
+Business context:
+{business_context}
+
+Rules:
+- Plain text only, no HTML
+- No spam words, no ALL CAPS
+- Subject line included on first line as "Subject: ..."
+- Reference something specific about the business
+- Name their digital gap clearly
+- Include 2-3 service lines with tracked placeholders: [LINK:web-design], [LINK:seo], [LINK:automation]
+- End with a soft CTA (reply or quick call)
+- Sign off as Estra
+- Do not include unsubscribe footer (added automatically)

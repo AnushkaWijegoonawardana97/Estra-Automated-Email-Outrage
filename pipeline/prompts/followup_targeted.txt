@@ -1,0 +1,12 @@
+Write a targeted follow-up. The recipient clicked our {service} page but did not reply.
+
+Business context:
+{business_context}
+Service clicked: {service}
+
+Rules:
+- Reference the service they viewed
+- Offer relevant examples for their business type
+- Plain text, 4-5 sentences
+- Sign off as Estra
+- First line: "Subject: ..."

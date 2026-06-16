@@ -1,0 +1,28 @@
+{
+  "name": "estra-automated-email-outreach",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter dashboard dev",
+    "build": "pnpm --filter dashboard build",
+    "start": "pnpm --filter dashboard start",
+    "lint": "pnpm --filter dashboard lint",
+    "seed": "tsx scripts/seed-config.ts",
+    "pipeline": "cd pipeline && python main.py",
+    "pipeline:find-email": "cd pipeline && python main.py --step find_email",
+    "pipeline:send": "cd pipeline && python main.py --step send",
+    "pipeline:retry": "cd pipeline && python main.py --step retry_failed",
+    "pipeline:jobs": "cd pipeline && python job_runner.py",
+    "follow-up": "cd pipeline && python follow_up.py"
+  },
+  "devDependencies": {
+    "dotenv": "^17.4.2",
+    "tsx": "^4.19.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}
