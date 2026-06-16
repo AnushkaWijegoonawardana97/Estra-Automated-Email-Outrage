@@ -2,31 +2,33 @@ import { NextResponse } from "next/server";
 import { connectMongo } from "@/lib/mongodb";
 import { PipelineLog } from "@/lib/models";
 
+const ALLOWED_STAGES = [
+  "pipeline",
+  "scraper",
+  "filter",
+  "enricher",
+  "sender",
+  "follow_up",
+] as const;
+
 export async function GET(request: Request) {
   await connectMongo();
 
   const { searchParams } = new URL(request.url);
   const stage = searchParams.get("stage");
-  const limit = Number(searchParams.get("limit") ?? "200");
-
-  const allowedStages = [
-    "pipeline",
-    "scraper",
-    "filter",
-    "enricher",
-    "sender",
-    "follow_up",
-  ] as const;
+  const page = Math.max(1, Number(searchParams.get("page") || 1));
+  const limit = Math.min(100, Math.max(1, Number(searchParams.get("limit") || 50)));
+  const skip = (page - 1) * limit;
 
   const filter =
-    stage && allowedStages.includes(stage as (typeof allowedStages)[number])
-      ? { stage: stage as (typeof allowedStages)[number] }
+    stage && ALLOWED_STAGES.includes(stage as (typeof ALLOWED_STAGES)[number])
+      ? { stage: stage as (typeof ALLOWED_STAGES)[number] }
       : {};
 
-  const logs = await PipelineLog.find(filter)
-    .sort({ createdAt: -1 })
-    .limit(Math.min(limit, 500))
-    .lean();
+  const [logs, total] = await Promise.all([
+    PipelineLog.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    PipelineLog.countDocuments(filter),
+  ]);
 
   const serialized = logs.map((log) => ({
     _id: String(log._id),
@@ -37,5 +39,11 @@ export async function GET(request: Request) {
     createdAt: log.createdAt.toISOString(),
   }));
 
-  return NextResponse.json(serialized);
+  return NextResponse.json({
+    logs: serialized,
+    total,
+    page,
+    limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+  });
 }

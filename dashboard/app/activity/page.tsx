@@ -6,9 +6,15 @@ import { PipelineLog } from "@/lib/models";
 
 export const dynamic = "force-dynamic";
 
+const PAGE_SIZE = 50;
+
 export default async function ActivityPage() {
   await connectMongo();
-  const logs = await PipelineLog.find().sort({ createdAt: -1 }).limit(200).lean();
+
+  const [logs, total] = await Promise.all([
+    PipelineLog.find().sort({ createdAt: -1 }).limit(PAGE_SIZE).lean(),
+    PipelineLog.countDocuments(),
+  ]);
 
   const serialized = logs.map((log) => ({
     _id: String(log._id),
@@ -26,13 +32,13 @@ export default async function ActivityPage() {
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-zinc-900">Pipeline Activity</h2>
           <p className="mt-1 text-sm text-zinc-500">
-            Live log of scraping, enrichment, and email sending events.
+            {total} log entr{total === 1 ? "y" : "ies"}
           </p>
         </div>
         <div className="mb-6">
           <PipelineTriggerPanel />
         </div>
-        <ActivityLogTable initialLogs={serialized} />
+        <ActivityLogTable initialLogs={serialized} initialTotal={total} />
       </main>
     </>
   );

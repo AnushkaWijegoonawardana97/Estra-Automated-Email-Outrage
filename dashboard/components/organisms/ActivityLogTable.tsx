@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/atoms/Badge";
+import { Pagination } from "@/components/molecules/Pagination";
+
+const PAGE_SIZE = 50;
 
 export interface PipelineLogRow {
   _id: string;
@@ -10,6 +13,14 @@ export interface PipelineLogRow {
   message: string;
   metadata: Record<string, unknown>;
   createdAt: string;
+}
+
+interface LogsResponse {
+  logs: PipelineLogRow[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 function levelTone(level: string) {
@@ -21,29 +32,61 @@ function levelTone(level: string) {
 
 export function ActivityLogTable({
   initialLogs,
+  initialTotal,
   stageFilter,
 }: {
   initialLogs: PipelineLogRow[];
+  initialTotal: number;
   stageFilter?: string;
 }) {
   const [logs, setLogs] = useState(initialLogs);
+  const [total, setTotal] = useState(initialTotal);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(
+    Math.max(1, Math.ceil(initialTotal / PAGE_SIZE)),
+  );
   const [stage, setStage] = useState(stageFilter ?? "");
   const [autoRefresh, setAutoRefresh] = useState(true);
 
-  const fetchLogs = useCallback(async () => {
-    const params = new URLSearchParams();
+  const fetchLogs = useCallback(async (pageToLoad: number) => {
+    const params = new URLSearchParams({
+      page: String(pageToLoad),
+      limit: String(PAGE_SIZE),
+    });
     if (stage) params.set("stage", stage);
+
     const response = await fetch(`/api/logs?${params.toString()}`);
-    if (response.ok) {
-      setLogs(await response.json());
-    }
+    if (!response.ok) return;
+
+    const data: LogsResponse = await response.json();
+    setLogs(data.logs);
+    setTotal(data.total);
+    setPage(data.page);
+    setTotalPages(data.totalPages);
   }, [stage]);
 
   useEffect(() => {
     if (!autoRefresh) return;
-    const interval = setInterval(fetchLogs, 10000);
+    const interval = setInterval(() => fetchLogs(page), 10000);
     return () => clearInterval(interval);
-  }, [autoRefresh, fetchLogs]);
+  }, [autoRefresh, fetchLogs, page]);
+
+  async function handleStageChange(nextStage: string) {
+    setStage(nextStage);
+    setPage(1);
+    const params = new URLSearchParams({ page: "1", limit: String(PAGE_SIZE) });
+    if (nextStage) params.set("stage", nextStage);
+    const response = await fetch(`/api/logs?${params.toString()}`);
+    if (!response.ok) return;
+    const data: LogsResponse = await response.json();
+    setLogs(data.logs);
+    setTotal(data.total);
+    setTotalPages(data.totalPages);
+  }
+
+  async function handlePageChange(nextPage: number) {
+    await fetchLogs(nextPage);
+  }
 
   return (
     <div className="space-y-4">
@@ -53,7 +96,7 @@ export function ActivityLogTable({
           <select
             className="rounded-md border border-zinc-300 px-3 py-2"
             value={stage}
-            onChange={(event) => setStage(event.target.value)}
+            onChange={(event) => void handleStageChange(event.target.value)}
           >
             <option value="">All</option>
             {["pipeline", "scraper", "filter", "enricher", "sender", "follow_up"].map(
@@ -67,7 +110,7 @@ export function ActivityLogTable({
         </label>
         <button
           type="button"
-          onClick={fetchLogs}
+          onClick={() => fetchLogs(page)}
           className="mt-5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white"
         >
           Refresh
@@ -146,6 +189,13 @@ export function ActivityLogTable({
             )}
           </tbody>
         </table>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          total={total}
+          pageSize={PAGE_SIZE}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
