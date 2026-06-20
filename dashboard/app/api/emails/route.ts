@@ -30,6 +30,8 @@ function serializeEmail(
     emailType: string;
     sentAt: Date;
     leadId: { toString(): string };
+    sendSource?: string | null;
+    campaignTemplateId?: string | null;
   },
   leadMap: Map<string, { businessName?: string; email?: string | null; status?: string }>,
 ) {
@@ -41,6 +43,8 @@ function serializeEmail(
     emailType: email.emailType,
     sentAt: email.sentAt.toISOString(),
     leadId: String(email.leadId),
+    sendSource: email.sendSource ?? "automated",
+    campaignTemplateId: email.campaignTemplateId ?? null,
     lead: lead
       ? {
           businessName: lead.businessName,

@@ -5,7 +5,7 @@ const emailSentSchema = new Schema(
     leadId: { type: Schema.Types.ObjectId, ref: "Lead", required: true },
     emailType: {
       type: String,
-      enum: ["initial", "followup_generic", "followup_targeted"],
+      enum: ["initial", "followup_generic", "followup_targeted", "campaign"],
       required: true,
     },
     subject: { type: String, required: true },
@@ -15,6 +15,12 @@ const emailSentSchema = new Schema(
     sentAt: { type: Date, default: Date.now },
     brevoMessageId: { type: String, default: "" },
     followUpCount: { type: Number, default: 0 },
+    sendSource: {
+      type: String,
+      enum: ["automated", "manual_campaign", "test"],
+      default: "automated",
+    },
+    campaignTemplateId: { type: String, default: null },
   },
   { collection: "emails_sent" },
 );

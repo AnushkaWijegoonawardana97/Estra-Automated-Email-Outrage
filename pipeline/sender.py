@@ -220,3 +220,77 @@ def send_follow_up_email(
         {"$set": {"unsubscribeToken": token, "updatedAt": datetime.now(timezone.utc)}},
     )
     return True
+
+
+def send_manual_email(
+    lead: dict,
+    subject: str,
+    text_body: str,
+    html_body: str,
+    email_type: str = "campaign",
+    *,
+    send_source: str = "manual_campaign",
+    campaign_template_id: str | None = None,
+) -> str:
+    import uuid
+
+    db = get_db()
+    config = get_config()
+    email = lead.get("email")
+
+    if not email:
+        raise RuntimeError("Lead has no email")
+    if _is_suppressed(db, email):
+        raise RuntimeError("Email is unsubscribed")
+
+    if _remaining_daily_quota(db, config) == 0:
+        raise RuntimeError("Daily email cap reached")
+
+    token = lead.get("unsubscribeToken") or str(uuid.uuid4())
+    message_id = send_via_brevo(
+        email,
+        subject,
+        text_body,
+        config,
+        html_body=html_body,
+    )
+
+    record: dict = {
+        "leadId": lead["_id"],
+        "emailType": email_type,
+        "subject": subject,
+        "body": text_body,
+        "htmlBody": html_body,
+        "serviceClicked": None,
+        "sentAt": datetime.now(timezone.utc),
+        "brevoMessageId": message_id,
+        "followUpCount": 0,
+        "sendSource": send_source,
+    }
+    if campaign_template_id:
+        record["campaignTemplateId"] = campaign_template_id
+
+    db["emails_sent"].insert_one(record)
+    db["leads"].update_one(
+        {"_id": lead["_id"]},
+        {
+            "$set": {
+                "status": "emailed",
+                "unsubscribeToken": token,
+                "updatedAt": datetime.now(timezone.utc),
+            }
+        },
+    )
+    log_pipeline_event(
+        "sender",
+        f"Manual campaign email sent to {email} ({lead.get('businessName')})",
+        level="success",
+        metadata={
+            "email": email,
+            "businessName": lead.get("businessName"),
+            "subject": subject,
+            "sendSource": send_source,
+            "campaignTemplateId": campaign_template_id,
+        },
+    )
+    return message_id

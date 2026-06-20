@@ -16,6 +16,8 @@ interface EmailRow {
   emailType: string;
   sentAt: string;
   leadId: string;
+  sendSource?: string;
+  campaignTemplateId?: string | null;
   lead?: {
     businessName?: string;
     email?: string;
@@ -215,7 +217,12 @@ export function EmailsTable({
                       {new Date(email.sentAt).toLocaleString()}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge label={email.emailType} tone="info" />
+                      <div className="flex flex-wrap gap-1">
+                        <Badge label={email.emailType} tone="info" />
+                        {email.sendSource === "manual_campaign" ? (
+                          <Badge label="manual campaign" tone="warning" />
+                        ) : null}
+                      </div>
                     </td>
                     <td className="px-4 py-3">{opened ? "Yes" : "No"}</td>
                     <td className="px-4 py-3">{clicks.join(", ") || "—"}</td>

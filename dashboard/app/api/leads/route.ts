@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import { connectMongo } from "@/lib/mongodb";
 import { serializeLead } from "@/lib/serializeLead";
 import { Lead } from "@/lib/models";
@@ -21,6 +22,18 @@ export async function GET(request: Request) {
 
   const filter: Record<string, unknown> = {};
   const andConditions: Record<string, unknown>[] = [];
+
+  const idsParam = searchParams.get("ids");
+  if (idsParam) {
+    const ids = idsParam.split(",").map((value) => value.trim()).filter(Boolean);
+    if (ids.length > 0) {
+      filter._id = {
+        $in: ids
+          .filter((id) => mongoose.Types.ObjectId.isValid(id))
+          .map((id) => new mongoose.Types.ObjectId(id)),
+      };
+    }
+  }
 
   if (country) filter.country = country;
   if (city) filter.city = city;

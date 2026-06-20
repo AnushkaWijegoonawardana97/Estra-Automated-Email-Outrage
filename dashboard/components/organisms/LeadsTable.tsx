@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { Badge } from "@/components/atoms/Badge";
+import { Checkbox } from "@/components/atoms/Checkbox";
 import { Pagination } from "@/components/molecules/Pagination";
+import { LeadsBulkActionBar } from "@/components/molecules/LeadsBulkActionBar";
 import { LeadDetailDrawer } from "@/components/organisms/LeadDetailDrawer";
 import { phoneTelHref } from "@/lib/contactLinks";
 import type { LeadRow } from "@/lib/serializeLead";
@@ -111,6 +113,7 @@ export function LeadsTable({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.max(1, Math.ceil(initialTotal / PAGE_SIZE)));
   const [selected, setSelected] = useState<LeadRow | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [country, setCountry] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [query, setQuery] = useState("");
@@ -158,8 +161,38 @@ export function LeadsTable({
     await fetchLeads(nextPage);
   }
 
+  const selectableOnPage = leads.filter((lead) => Boolean(lead.email));
+  const allOnPageSelected =
+    selectableOnPage.length > 0 &&
+    selectableOnPage.every((lead) => selectedIds.has(lead._id));
+
+  function toggleLeadSelection(leadId: string, checked: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (checked) next.add(leadId);
+      else next.delete(leadId);
+      return next;
+    });
+  }
+
+  function toggleSelectAllOnPage(checked: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      for (const lead of selectableOnPage) {
+        if (checked) next.add(lead._id);
+        else next.delete(lead._id);
+      }
+      return next;
+    });
+  }
+
   return (
     <div className="space-y-4">
+      <LeadsBulkActionBar
+        selectedCount={selectedIds.size}
+        selectedIds={[...selectedIds]}
+        onClear={() => setSelectedIds(new Set())}
+      />
       <div className="flex flex-wrap items-end gap-3">
         <label className="text-sm">
           <span className="mb-1 block text-zinc-500">Search</span>
@@ -279,6 +312,14 @@ export function LeadsTable({
         <table className="w-full table-fixed text-left text-sm">
           <thead className="bg-zinc-50 text-zinc-500">
             <tr>
+              <th className="w-10 px-3 py-3">
+                <Checkbox
+                  checked={allOnPageSelected}
+                  ariaLabel="Select all leads with email on this page"
+                  onChange={toggleSelectAllOnPage}
+                  disabled={selectableOnPage.length === 0}
+                />
+              </th>
               {TABLE_COLUMNS.map(({ heading, width }) => (
                 <th key={heading} className={`px-4 py-3 font-medium ${width}`}>
                   {heading}
@@ -289,7 +330,7 @@ export function LeadsTable({
           <tbody>
             {leads.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-zinc-500">
+                <td colSpan={10} className="px-4 py-8 text-center text-zinc-500">
                   No leads yet. Run the pipeline, then click Refresh.
                 </td>
               </tr>
@@ -303,6 +344,14 @@ export function LeadsTable({
                     className="cursor-pointer border-t border-zinc-100 hover:bg-zinc-50"
                     onClick={() => setSelected(lead)}
                   >
+                    <td className="px-3 py-3">
+                      <Checkbox
+                        checked={selectedIds.has(lead._id)}
+                        disabled={!lead.email}
+                        ariaLabel={`Select ${lead.businessName}`}
+                        onChange={(checked) => toggleLeadSelection(lead._id, checked)}
+                      />
+                    </td>
                     <td className="max-w-0 px-4 py-3">
                       <CellText className="font-medium text-zinc-900" title={lead.businessName}>
                         {lead.businessName}

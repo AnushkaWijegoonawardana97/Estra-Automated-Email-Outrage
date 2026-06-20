@@ -7,6 +7,7 @@
     "start": "pnpm --filter dashboard start",
     "lint": "pnpm --filter dashboard lint",
     "seed": "tsx scripts/seed-config.ts",
+    "seed:hawksmoor": "tsx scripts/seed-hawksmoor-leads.ts",
     "dev:pipeline": "bash scripts/dev-pipeline-terminals.sh",
     "pipeline": "cd pipeline && python main.py",
     "pipeline:scrape": "cd pipeline && python main.py --step scrape",
@@ -17,6 +18,7 @@
     "pipeline:workers": "bash scripts/dev-pipeline-terminals.sh",
     "pipeline:test-send": "cd pipeline && python send_test_leads.py",
     "pipeline:test-email": "cd pipeline && python3 -m unittest test_email_personalization.py -v",
+    "pipeline:test-campaign": "cd pipeline && python3 -m unittest test_campaign_email.py -v",
     "pipeline:retry": "cd pipeline && python main.py --step retry_failed",
     "pipeline:jobs": "cd pipeline && python job_runner.py",
     "follow-up": "cd pipeline && python follow_up.py"

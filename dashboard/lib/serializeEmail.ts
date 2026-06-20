@@ -14,6 +14,8 @@ export interface EmailDetail {
   brevoMessageId: string;
   followUpCount: number;
   serviceClicked: string | null;
+  sendSource?: string | null;
+  campaignTemplateId?: string | null;
   leadId: string;
   lead: {
     businessName?: string;
@@ -34,6 +36,8 @@ export function serializeEmailDetail(
     brevoMessageId?: string | null;
     followUpCount?: number | null;
     serviceClicked?: string | null;
+    sendSource?: string | null;
+    campaignTemplateId?: string | null;
     leadId: { toString(): string };
   },
   lead: {
@@ -57,6 +61,8 @@ export function serializeEmailDetail(
     brevoMessageId: email.brevoMessageId ?? "",
     followUpCount: email.followUpCount ?? 0,
     serviceClicked: email.serviceClicked ?? null,
+    sendSource: email.sendSource ?? "automated",
+    campaignTemplateId: email.campaignTemplateId ?? null,
     leadId: String(email.leadId),
     lead: lead
       ? {

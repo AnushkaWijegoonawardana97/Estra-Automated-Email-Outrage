@@ -98,6 +98,12 @@ export function EmailDetailDrawer({
           <section className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <Badge label={email.emailType} tone="info" />
+              {email.sendSource === "manual_campaign" ? (
+                <Badge label="manual campaign" tone="warning" />
+              ) : null}
+              {email.campaignTemplateId ? (
+                <Badge label={email.campaignTemplateId} tone="neutral" />
+              ) : null}
               {email.lead?.status && <Badge label={email.lead.status} />}
               {opened && <Badge label="Opened" tone="success" />}
               {clicks.length > 0 && (
